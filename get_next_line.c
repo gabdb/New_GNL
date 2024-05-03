@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/03 23:13:31 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/04 01:48:18 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ char	*dupl_and_adjust_remain(char *remain)
 {
 	ssize_t	i;
 	ssize_t	j;
-	ssize_t	save;
 	char	*new_line;
 
 	new_line = my_strdup(remain); // copie remainder jusqu'à trouver '\0', donc potentiellement plus court que vrai remainder !
@@ -42,16 +41,13 @@ char	*dupl_and_adjust_remain(char *remain)
 		i++;
 	if ('\n' == new_line[i])
 	{
-		i++; // i is now the index of first non '\n' character in `remain` and in `new_line`
-		j = i; //sauver index i pour adapter `remain` arès
-		save = j;
-		while (new_line[i] != '\0') // faut bzero tt ce qu'il y a APRES cet index dans `new_line`
-			new_line[i++] = '\0';
+		j = i + 1; //sauver index i pour adapter `remain` arès
+		while (new_line[++i] != '\0') // faut bzero tt ce qu'il y a APRES cet index dans `new_line`
+			new_line[i] = '\0';
 		i = 0;
-		while (j <= BUFFER_SIZE + 1 || i < save) // faut bzero tout ce qu'il y a AVANT cet index dans `remain`
+		while (j <= BUFFER_SIZE + 1) // faut bzero tout ce qu'il y a AVANT cet index dans `remain`
 			remain[i++] = remain[j++];
-		while (remain[i])
-			remain[i++] = '\0';
+		my_bzero(remain, j - i);
 	}
 	else if ('\0' == new_line[i]) //means end of new_line's memory block !
 		my_bzero(remain, BUFFER_SIZE + 1);
@@ -128,9 +124,12 @@ char	*get_next_line(int fd)
 	else if (check == 0)
 	{
 		i = end_of_line(buffer);
-		while (buffer[i] != '\0')
-			remainder[check++] = buffer[i++];
+		while (buffer[++i] != '\0')
+			remainder[check++] = buffer[i];
+		my_bzero(remainder, BUFFER_SIZE - check);
 	}
+	//if (my_strlen(line) == 0)
+	//	return (free(line), line = NULL, NULL);
 	return (line);
 }
 

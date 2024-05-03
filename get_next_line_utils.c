@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:53 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/03 22:52:42 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/04 01:29:56 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ char	*my_strjoin(char *s1, char *s2)
 		i++;
 	}
 	j = 0;
-	while (s2[j] && s2[j] != '\n')
+	while (s2[j]) // && s2[j] != '\n')
 	{
 		result[i + j] = s2[j];
 		j++;
