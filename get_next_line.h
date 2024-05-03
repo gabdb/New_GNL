@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:58 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/03 01:42:38 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/03 21:52:10 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,9 @@ void	my_bzero(char *s, ssize_t n);
 ssize_t	my_strlen(char *str);
 char	*my_strdup(char *str);
 char	*dupl_and_adjust_remain(char *remain);
+ssize_t	end_of_line(char *line);
+char	*my_strjoin(char *s1, char *s2);
+ssize_t	manage_extraction(int fd, char *buf, char **line);
+char	extract_buffer(int fd, char *buffer);
 
 #endif

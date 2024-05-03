@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:53 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/03 01:43:34 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/03 20:25:02 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,31 @@ char	*my_strdup(char *str)
 	}
 	my_bzero(ptr + i, len + 1 - i);
 	return (ptr);
+}
+
+char	*my_strjoin(char *s1, char *s2)
+{
+	size_t	len;
+	char	*result;
+	size_t	i;
+	size_t	j;
+
+	len = ft_strlen(s1) + ft_strlen(s2);
+	result = (char *)malloc(len + 1);
+	if (!result)
+		return (free(s1), NULL);
+	i = 0;
+	while (s1[i])
+	{
+		result[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j] && s2[j] != '\n')
+	{
+		result[i + j] = s2[j];
+		j++;
+	}
+	result[i + j] = '\0';
+	return (free(s1), result);
 }

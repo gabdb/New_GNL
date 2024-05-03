@@ -6,11 +6,25 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/03 01:55:10 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/03 21:58:07 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+ssize_t	end_of_line(char *line)
+{
+	ssize_t	i;
+
+	i = 0;
+	while (line[i])
+	{
+		if ('\n' == line[i])
+			return (i);
+		i++;
+	}
+	return (0);
+}
 
 // sinon je rajoute une fonction: strdup_till_\n(), ca facilitera tout
 char	*dupl_and_adjust_remain(char *remain)
@@ -34,32 +48,113 @@ char	*dupl_and_adjust_remain(char *remain)
 		i = 0;
 		while (remain[j]) // faut bzero tout ce qu'il y a AVANT cet index dans `remain`
 			remain[i++] = remain[j++];
-		my_bzero(remain, j - i); //jpeux juste while (remain[i] --> remain[i] = '\0')
+		while (remain[i])
+			remain[i++] = '\0';
 	}
 	else if ('\0' == new_line[i]) //means end of new_line's memory block !
 		my_bzero(remain, BUFFER_SIZE + 1);
 	return (new_line);
 }
 
-ssize_t	extract_buffer(int fd, char *buffer)
+char	extract_buffer(int fd, char *buffer)
 {
-	
+	ssize_t	count;
+	ssize_t	i;
+
+	my_bzero(buffer, BUFFER_SIZE + 1);
+	count = read(fd, buffer, BUFFER_SIZE);
+	if (count < 0)
+		return ('e'); // 'e' means ERROR
+	else if (count == 0)
+		return ('\0'); // \0 for end of file
+	i = 0;
+	while (i < count)
+	{
+		if ('\n' == buffer[i])
+			return ('\n'); // \n for end of line
+		i++;
+	}
+	return ('c'); //no \n nor \0, so 'c' for CONTINUE
+}
+
+ssize_t	manage_extraction(int fd, char *buf, char **line)
+{
+	char	check;
+
+	check = 'c';
+	while (check == 'c')
+	{
+		check = extract_buffer(fd, buf);
+		if (check == 'c')
+		{
+			*line = my_strjoin(*line, buf);
+			if (!*line)
+				return (-1);
+		}
+	}
+	if (check == '\0')
+		return (free(*line), *line = NULL, 0); //file fini, extract a lu 0 char's...
+	else if (check == '\n')
+	{
+		*line = my_strjoin(*line, buf);
+		if (!*line)
+			return (-1);
+		return (1);
+	}
+	return (2);
 }
 
 char	*get_next_line(int fd)
 {
+	ssize_t		i;
+	ssize_t		check;
 	char		*line;
 	static char	*remainder = NULL;
 	char		buffer[BUFFER_SIZE + 1];
 
-	if (fd < 0)
-		return (NULL);
 	remainder = init_remainder(&remainder);
-	if (!remainder)
+	if (!remainder || fd < 0)
 		return (NULL);
 	line = dupl_and_adjust_remain(remainder);
 	if (!line)
-		return (NULL);
-	
+		return (free(remainder), remainder = NULL, NULL);
+	if (end_of_line(line) > 0) //je check pas si line contient '\0'
+		return (line);
+	check = manage_extraction(fd, buffer, &line);
+	if (check == -1 || check == 0) // erreur dans le process || fin de fichier
+		return (free(remainder), remainder = NULL, NULL);
+	else if (check == 1)
+	{
+		i = end_of_line(line);
+		while (line[check++ - 1] != '\n');
+		while (line[check] != '\0')
+		{
+			remainder[i++] = line[check];
+			line[check++] = '\0';
+		}
+	}
+	return (line);
 }
+
+int main() {
+    int fd;
+    char *line;
+
+    fd = open("test.txt", O_RDONLY);
+    if (fd == -1) {
+        perror("Error opening file");
+        return (1);
+    }
+	
+	int i = 0;
+	while (i < 4) {
+		line = get_next_line(fd);
+        printf("%s", line);  // Print each line as it's read
+		free(line); // Don't forget to free memory!
+		i++;
+    }
+
+    close(fd);
+    return (0);
+} 
 
