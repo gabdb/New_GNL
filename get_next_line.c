@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/03 21:58:07 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/03 23:13:31 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ char	*dupl_and_adjust_remain(char *remain)
 {
 	ssize_t	i;
 	ssize_t	j;
+	ssize_t	save;
 	char	*new_line;
 
 	new_line = my_strdup(remain); // copie remainder jusqu'à trouver '\0', donc potentiellement plus court que vrai remainder !
@@ -43,10 +44,11 @@ char	*dupl_and_adjust_remain(char *remain)
 	{
 		i++; // i is now the index of first non '\n' character in `remain` and in `new_line`
 		j = i; //sauver index i pour adapter `remain` arès
+		save = j;
 		while (new_line[i] != '\0') // faut bzero tt ce qu'il y a APRES cet index dans `new_line`
 			new_line[i++] = '\0';
 		i = 0;
-		while (remain[j]) // faut bzero tout ce qu'il y a AVANT cet index dans `remain`
+		while (j <= BUFFER_SIZE + 1 || i < save) // faut bzero tout ce qu'il y a AVANT cet index dans `remain`
 			remain[i++] = remain[j++];
 		while (remain[i])
 			remain[i++] = '\0';
@@ -88,18 +90,18 @@ ssize_t	manage_extraction(int fd, char *buf, char **line)
 		if (check == 'c')
 		{
 			*line = my_strjoin(*line, buf);
-			if (!*line)
+			if (!(*line))
 				return (-1);
 		}
 	}
 	if (check == '\0')
-		return (free(*line), *line = NULL, 0); //file fini, extract a lu 0 char's...
+		return (free(*line), *line = NULL, 1); //file fini, extract a lu 0 char's...
 	else if (check == '\n')
 	{
 		*line = my_strjoin(*line, buf);
-		if (!*line)
+		if (!(*line))
 			return (-1);
-		return (1);
+		return (0);
 	}
 	return (2);
 }
@@ -121,17 +123,13 @@ char	*get_next_line(int fd)
 	if (end_of_line(line) > 0) //je check pas si line contient '\0'
 		return (line);
 	check = manage_extraction(fd, buffer, &line);
-	if (check == -1 || check == 0) // erreur dans le process || fin de fichier
+	if (check == -1 || check == 1) // erreur dans le process || fin de fichier
 		return (free(remainder), remainder = NULL, NULL);
-	else if (check == 1)
+	else if (check == 0)
 	{
-		i = end_of_line(line);
-		while (line[check++ - 1] != '\n');
-		while (line[check] != '\0')
-		{
-			remainder[i++] = line[check];
-			line[check++] = '\0';
-		}
+		i = end_of_line(buffer);
+		while (buffer[i] != '\0')
+			remainder[check++] = buffer[i++];
 	}
 	return (line);
 }
@@ -140,14 +138,14 @@ int main() {
     int fd;
     char *line;
 
-    fd = open("test.txt", O_RDONLY);
+    fd = open("tekst.txt", O_RDONLY);
     if (fd == -1) {
         perror("Error opening file");
         return (1);
     }
 	
 	int i = 0;
-	while (i < 4) {
+	while (i < 9) {
 		line = get_next_line(fd);
         printf("%s", line);  // Print each line as it's read
 		free(line); // Don't forget to free memory!

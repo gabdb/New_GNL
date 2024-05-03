@@ -1,10 +1,9 @@
 ceci est le texte pour TESTER !
 deuxieme ligne.
-troisieme ligne longue pour tester comment ca reagit avec un grand buffer, potentiellement et tout faut voir tout cela quoi donc si ca va. je rajoute de l'espace, idéalement ici faudrait vraiment beaucoup de charactères pour checker la fin de ligne. fin troisieme ligne ICI !
+troisieme ligne longue pour tester comment ca reagit avec un grand buffer, donc voila faut rajouter des char's, la FIN EST ICI
 quatrième ligne.
 
 sixième ligne, la 5e était vide, pour tester aussi.
-
 
 avant-derniere ligne.
 FIN
