@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/04 01:48:18 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/04 02:44:36 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ char	*get_next_line(int fd)
 	remainder = init_remainder(&remainder);
 	if (!remainder || fd < 0)
 		return (NULL);
+	printf("\n___%s___\n", remainder);
 	line = dupl_and_adjust_remain(remainder);
 	if (!line)
 		return (free(remainder), remainder = NULL, NULL);
@@ -126,10 +127,10 @@ char	*get_next_line(int fd)
 		i = end_of_line(buffer);
 		while (buffer[++i] != '\0')
 			remainder[check++] = buffer[i];
-		my_bzero(remainder, BUFFER_SIZE - check);
+		my_bzero(remainder + check, BUFFER_SIZE - check);
 	}
-	//if (my_strlen(line) == 0)
-	//	return (free(line), line = NULL, NULL);
+	if (my_strlen(line) == 0)
+		return (free(line), line = NULL, NULL);
 	return (line);
 }
 
@@ -144,9 +145,9 @@ int main() {
     }
 	
 	int i = 0;
-	while (i < 9) {
+	while (i < 4 && line != NULL) {
 		line = get_next_line(fd);
-        printf("%s", line);  // Print each line as it's read
+        //printf("%s", line);  // Print each line as it's read
 		free(line); // Don't forget to free memory!
 		i++;
     }
