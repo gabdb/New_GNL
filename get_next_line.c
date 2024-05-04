@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/04 16:38:21 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/04 18:39:25 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ ssize_t	manage_extraction(int fd, char *buf, char **line)
 		}
 	}
 	if (check == '\0')
-		return (free(*line), *line = NULL, 1); //file fini, extract a lu 0 char's...
+		return (1); //file fini, extract a lu 0 char's, avant je free-ais *line in return, mais je perdais les last char's
 	else if (check == '\n')
 	{
 		*line = my_strjoin(*line, buf);
@@ -121,14 +121,14 @@ char	*get_next_line(int fd)
 		return (NULL);
 	//printf("-> %s <-\n", remainder);
 	line = dupl_and_adjust_remain(remainder);
-	//printf("remain after dup:  >>> %s <<<\n", line);
+	//printf("line after dup:  >>> %s <<<\n\n", line);
 	if (!line)
 		return (free(remainder), remainder = NULL, NULL);
 	if (end_of_line(line) >= 0) //je check pas si line contient '\0'
 		return (line);
 	check = manage_extraction(fd, buffer, &line);
 	if (check == -1 || check == 1) // erreur dans le process || fin de fichier
-		return (free(remainder), remainder = NULL, NULL);
+		return (free(remainder), remainder = NULL, line);
 	else if (check == 0)
 	{	//ici faut encore bzero line apres \n !!!!!!!!!!
 		i = end_of_line(buffer);
@@ -136,8 +136,8 @@ char	*get_next_line(int fd)
 			remainder[check++] = buffer[i];
 		my_bzero(remainder + check, BUFFER_SIZE - check);
 	}
-	//if (my_strlen(line) == 0)
-	//	return (free(line), line = NULL, NULL);
+	if (my_strlen(line) == 0)
+		return (free(line), line = NULL, NULL);
 	//printf("line avant return: %s\n", line);
 	return (line);
 }
@@ -153,7 +153,8 @@ int main() {
     }
 	
 	int i = 0;
-	while (i < 8 && line != NULL) {
+	while (i < 8) // && line != NULL)
+	{
 		line = get_next_line(fd);
         printf("%d'th line: %s", i + 1, line);  // Print each line as it's read
 		free(line); // Don't forget to free memory!
