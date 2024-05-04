@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/04 03:17:59 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:38:21 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ ssize_t	end_of_line(char *line)
 			return (i);
 		i++;
 	}
-	return (0);
+	return (-1);
 }
 
 // sinon je rajoute une fonction: strdup_till_\n(), ca facilitera tout
@@ -49,7 +49,7 @@ char	*dupl_and_adjust_remain(char *remain)
 		i = 0;
 		while (j <= BUFFER_SIZE + 1) // faut bzero tout ce qu'il y a AVANT cet index dans `remain`
 			remain[i++] = remain[j++];
-		my_bzero(remain, j - i);
+		my_bzero(remain + i, BUFFER_SIZE + 1 - i); // j - i);
 	}
 	else if ('\0' == new_line[i]) //means end of new_line's memory block !
 		my_bzero(remain, BUFFER_SIZE + 1);
@@ -80,6 +80,7 @@ char	extract_buffer(int fd, char *buffer)
 ssize_t	manage_extraction(int fd, char *buf, char **line)
 {
 	char	check;
+	ssize_t	i;
 
 	check = 'c';
 	while (check == 'c')
@@ -99,6 +100,9 @@ ssize_t	manage_extraction(int fd, char *buf, char **line)
 		*line = my_strjoin(*line, buf);
 		if (!(*line))
 			return (-1);
+		i = end_of_line(*line) + 1;
+		while ((*line)[i] !=0)
+			(*line)[i++] = '\0';
 		return (0);
 	}
 	return (2);
@@ -115,12 +119,12 @@ char	*get_next_line(int fd)
 	remainder = init_remainder(&remainder);
 	if (!remainder || fd < 0)
 		return (NULL);
-	//printf("\n___%s___\n", remainder);
+	//printf("-> %s <-\n", remainder);
 	line = dupl_and_adjust_remain(remainder);
-	//printf("line after dup:  %s\n", line);
+	//printf("remain after dup:  >>> %s <<<\n", line);
 	if (!line)
 		return (free(remainder), remainder = NULL, NULL);
-	if (end_of_line(line) > 0) //je check pas si line contient '\0'
+	if (end_of_line(line) >= 0) //je check pas si line contient '\0'
 		return (line);
 	check = manage_extraction(fd, buffer, &line);
 	if (check == -1 || check == 1) // erreur dans le process || fin de fichier
@@ -149,9 +153,9 @@ int main() {
     }
 	
 	int i = 0;
-	while (i < 6 && line != NULL) {
+	while (i < 8 && line != NULL) {
 		line = get_next_line(fd);
-        printf("%d'th line: %s\n", i+1, line);  // Print each line as it's read
+        printf("%d'th line: %s", i + 1, line);  // Print each line as it's read
 		free(line); // Don't forget to free memory!
 		i++;
     }

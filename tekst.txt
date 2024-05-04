@@ -4,6 +4,5 @@ troisieme ligne longue pour tester comment ca reagit avec un grand buffer, donc 
 quatrième ligne.
 
 sixième ligne, la 5e était vide, pour tester aussi.
-
 avant-derniere ligne.
 FIN
