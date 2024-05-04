@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:53 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/04 02:27:32 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/04 03:16:15 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,15 @@ char	*init_remainder(char **remain)
 
 void	my_bzero(char *s, ssize_t n)
 {
+	ssize_t	i;
+
 	if (!s || 0 == n)
 		return ;
-	while (n > 0 && *s)
+	i = 0;
+	while (n > 0 && s[i])
 	{
-		*s = '\0';
-		s++;
+		s[i] = '\0';
+		i++;
 		n--;
 	}
 }
@@ -65,7 +68,7 @@ char	*my_strdup(char *str)
 		ptr[i] = str[i];
 		i++;
 	}
-	//my_bzero(ptr + i, len + 1 - i);
+	my_bzero(ptr + i, len + 1 - i);
 	return (ptr);
 }
 
