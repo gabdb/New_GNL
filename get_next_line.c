@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/04 18:39:25 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/05 23:18:08 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,9 @@ ssize_t	manage_extraction(int fd, char *buf, char **line)
 	{
 		check = extract_buffer(fd, buf);
 		if (check == 'c')
-		{
 			*line = my_strjoin(*line, buf);
-			if (!(*line))
-				return (-1);
-		}
+		if (!(*line))
+			return (-1);
 	}
 	if (check == '\0')
 		return (1); //file fini, extract a lu 0 char's, avant je free-ais *line in return, mais je perdais les last char's
@@ -134,7 +132,7 @@ char	*get_next_line(int fd)
 		i = end_of_line(buffer);
 		while (buffer[++i] != '\0')
 			remainder[check++] = buffer[i];
-		my_bzero(remainder + check, BUFFER_SIZE - check);
+		my_bzero(remainder + check, BUFFER_SIZE + 1 - check);
 	}
 	if (my_strlen(line) == 0)
 		return (free(line), line = NULL, NULL);
@@ -153,7 +151,7 @@ int main() {
     }
 	
 	int i = 0;
-	while (i < 8) // && line != NULL)
+	while (i < 12) // && line != NULL)
 	{
 		line = get_next_line(fd);
         printf("%d'th line: %s", i + 1, line);  // Print each line as it's read
