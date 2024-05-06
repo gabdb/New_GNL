@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:58 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/06 16:04:53 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/06 17:38:21 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,15 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
+
+// STRUCTURE
+typedef struct s_variable
+{
+	ssize_t		i;
+	ssize_t		check;
+	char		*line;
+	char		*buffer;
+}				t_variable;
 
 // PROTOTYPES
 char	*get_next_line(int fd);

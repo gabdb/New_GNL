@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/06 16:22:45 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/06 17:40:46 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,34 +106,31 @@ ssize_t	manage_extraction(int fd, char *buf, char **line)
 
 char	*get_next_line(int fd)
 {
-	ssize_t		i;
-	ssize_t		check;
-	char		*line;
-	static char	*remainder = NULL;
-	char		*buffer;
+	t_variable	v;
+	static char	*rest = NULL;
 
-	buffer = NULL;
-	remainder = init_remainder(remainder, &buffer);
-	if (!remainder || fd < 0)
-		return (free(buffer), NULL);
-	line = dupl_and_adjust_remain(remainder);
-	if (!line)
-		return (free(remainder),remainder = NULL,free(buffer),NULL);
-	if (end_of_line(line) >= 0)
-		return (free(buffer), buffer = NULL, line);
-	check = manage_extraction(fd, buffer, &line);
-	if (check == -1)
-		return (free(remainder),remainder = NULL,free(buffer),NULL);
-	else if (check == 0)
+	v.buffer = NULL;
+	rest = init_remainder(rest, &v.buffer);
+	if (!rest || fd < 0)
+		return (free(v.buffer), NULL);
+	v.line = dupl_and_adjust_remain(rest);
+	if (!v.line)
+		return (free(rest), rest = NULL, free(v.buffer), NULL);
+	if (end_of_line(v.line) >= 0)
+		return (free(v.buffer), v.buffer = NULL, v.line);
+	v.check = manage_extraction(fd, v.buffer, &(v.line));
+	if (v.check == -1)
+		return (free(rest), rest = NULL, free(v.buffer), NULL);
+	else if (v.check == 0)
 	{
-		i = end_of_line(buffer);
-		while (buffer[++i] != '\0')
-			remainder[check++] = buffer[i];
-		my_bzero(remainder + check, BUFFER_SIZE + 1 - check);
+		v.i = end_of_line(v.buffer);
+		while (v.buffer[++(v.i)] != '\0')
+			rest[v.check++] = v.buffer[v.i];
+		my_bzero(rest + v.check, BUFFER_SIZE + 1 - v.check);
 	}
-	if (*line == '\0')
-		return (free(remainder),remainder = NULL,free(line),free(buffer), NULL);
-	return (free(buffer), line);
+	if (*(v.line) == '\0')
+		return (free(rest), rest = NULL, free(v.line), free(v.buffer), NULL);
+	return (free(v.buffer), v.line);
 }
 
 /*
