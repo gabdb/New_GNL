@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:53 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/05 23:17:29 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/06 16:05:33 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,26 @@ ssize_t	my_strlen(char *str)
 	return (i);
 }
 
-char	*init_remainder(char **remain)
+char	*init_remainder(char *remain, char **buffer)
 {
-	if (*remain != NULL)
-		return (*remain);
-	*remain = (char *)malloc(BUFFER_SIZE + 1);
-	if (!(*remain))
+	*buffer = (char *)malloc(BUFFER_SIZE + 1);
+	if (!(*buffer))
+	{
+		if (remain)
+		{
+			free(remain);
+			remain = NULL;
+		}
 		return (NULL);
-	my_bzero(*remain, BUFFER_SIZE + 1);
-	return (*remain);
+	}
+	my_bzero(*buffer, BUFFER_SIZE + 1);
+	if (remain != NULL)
+		return (remain);
+	remain = (char *)malloc(BUFFER_SIZE + 1);
+	if (!remain)
+		return (NULL);
+	my_bzero(remain, BUFFER_SIZE + 1);
+	return (remain);
 }
 
 void	my_bzero(char *s, ssize_t n)
@@ -42,7 +53,7 @@ void	my_bzero(char *s, ssize_t n)
 	if (!s || 0 == n)
 		return ;
 	i = 0;
-	while (n > 0) // && s[i])
+	while (n > 0)
 	{
 		s[i] = '\0';
 		i++;
@@ -50,11 +61,11 @@ void	my_bzero(char *s, ssize_t n)
 	}
 }
 
-char	*my_strdup(char *str)
+char	*myy_strdup(char *str)
 {
 	ssize_t	len;
 	ssize_t	i;
-	char    *ptr;
+	char	*ptr;
 
 	if (!str)
 		return (NULL);
@@ -68,7 +79,7 @@ char	*my_strdup(char *str)
 		ptr[i] = str[i];
 		i++;
 	}
-	my_bzero(ptr + i, len + 1 - i);
+	ptr[i] = '\0';
 	return (ptr);
 }
 
