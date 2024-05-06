@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/06 17:40:46 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/06 19:10:30 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ char	*dupl_and_adjust_remain(char *remain)
 		while (new_line[++i] != '\0')
 			new_line[i] = '\0';
 		i = 0;
-		while (j < BUFFER_SIZE + 1)
+		while (remain[j]) //(j < BUFFER_SIZE + 1)
 			remain[i++] = remain[j++];
-		my_bzero(remain + i, BUFFER_SIZE + 1 - i);
+		remain[i] = '\0'; //my_bzero(remain + i, my_strlen(remain) - i); // BUFFER_SIZE + 1 - i);
 	}
 	else if ('\0' == new_line[i])
-		my_bzero(remain, BUFFER_SIZE + 1);
+		my_bzero(remain, i + 1); //BUFFER_SIZE + 1);
 	return (new_line);
 }
 
@@ -59,11 +59,11 @@ char	extract_buffer(int fd, char *buffer)
 	ssize_t	count;
 	ssize_t	i;
 
-	my_bzero(buffer, BUFFER_SIZE + 1);
 	count = read(fd, buffer, BUFFER_SIZE);
 	if (count < 0)
 		return ('e');
-	else if (count == 0)
+	buffer[count] = '\0';
+	if (count == 0)
 		return ('\0');
 	i = 0;
 	while (i < count)
@@ -126,7 +126,7 @@ char	*get_next_line(int fd)
 		v.i = end_of_line(v.buffer);
 		while (v.buffer[++(v.i)] != '\0')
 			rest[v.check++] = v.buffer[v.i];
-		my_bzero(rest + v.check, BUFFER_SIZE + 1 - v.check);
+		rest[v.check] = '\0'; // my_bzero(rest + v.check, BUFFER_SIZE + 1 - v.check);
 	}
 	if (*(v.line) == '\0')
 		return (free(rest), rest = NULL, free(v.line), free(v.buffer), NULL);
@@ -145,15 +145,17 @@ int main() {
     }
 	
 	int i = 0;
-	while (i < 15) // && line != NULL)
+	while (i < 12) // && line != NULL)
 	{
 		line = get_next_line(fd);
-        printf("%d'th line: %s", i + 1, line);  // Print each line as it's read
+        printf("%d'th line: %s", i + 1, line); 
+		if(line == NULL)
+			exit(0); // Print each line as it's read
 		free(line); // Don't forget to free memory!
 		i++;
     }
 
     close(fd);
     return (0);
-} 
+}
 */
