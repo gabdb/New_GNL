@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:58 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/06 17:38:21 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/07 12:42:43 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,17 @@
 #  define BUFFER_SIZE 1
 # endif
 
+# if BUFFER_SIZE >= 2147483647
+#  undef BUFFER_SIZE
+#  define BUFFER_SIZE 2147483646
+# endif
+
 // LIBRAIRIES
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <limits.h>
 
 // STRUCTURE
 typedef struct s_variable

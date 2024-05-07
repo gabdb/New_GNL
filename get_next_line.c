@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/06 19:10:30 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/07 12:43:16 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ char	*dupl_and_adjust_remain(char *remain)
 		while (new_line[++i] != '\0')
 			new_line[i] = '\0';
 		i = 0;
-		while (remain[j]) //(j < BUFFER_SIZE + 1)
+		while (remain[j])
 			remain[i++] = remain[j++];
-		remain[i] = '\0'; //my_bzero(remain + i, my_strlen(remain) - i); // BUFFER_SIZE + 1 - i);
+		remain[i] = '\0';
 	}
 	else if ('\0' == new_line[i])
-		my_bzero(remain, i + 1); //BUFFER_SIZE + 1);
+		my_bzero(remain, i + 1);
 	return (new_line);
 }
 
@@ -126,7 +126,7 @@ char	*get_next_line(int fd)
 		v.i = end_of_line(v.buffer);
 		while (v.buffer[++(v.i)] != '\0')
 			rest[v.check++] = v.buffer[v.i];
-		rest[v.check] = '\0'; // my_bzero(rest + v.check, BUFFER_SIZE + 1 - v.check);
+		rest[v.check] = '\0';
 	}
 	if (*(v.line) == '\0')
 		return (free(rest), rest = NULL, free(v.line), free(v.buffer), NULL);

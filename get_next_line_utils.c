@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:42:53 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/06 18:59:55 by gnyssens         ###   ########.fr       */
+/*   Updated: 2024/05/07 12:23:18 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,11 @@ char	*init_remainder(char *remain, char **buffer)
 		}
 		return (NULL);
 	}
-	//my_bzero(*buffer, BUFFER_SIZE + 1);
 	if (remain != NULL)
 		return (remain);
 	remain = (char *)malloc(BUFFER_SIZE + 1);
 	if (!remain)
 		return (NULL);
-	//my_bzero(remain, BUFFER_SIZE + 1);
 	*remain = '\0';
 	return (remain);
 }
