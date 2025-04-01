@@ -6,7 +6,7 @@
 /*   By: gnyssens <gnyssens@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 19:15:52 by gnyssens          #+#    #+#             */
-/*   Updated: 2024/05/07 12:43:16 by gnyssens         ###   ########.fr       */
+/*   Updated: 2025/04/01 17:50:09 by gnyssens         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,12 +145,14 @@ int main() {
     }
 	
 	int i = 0;
-	while (i < 12) // && line != NULL)
+	while (i < 100) // && line != NULL)
 	{
 		line = get_next_line(fd);
         printf("%d'th line: %s", i + 1, line); 
 		if(line == NULL)
-			exit(0); // Print each line as it's read
+		{
+			exit(0);
+		}
 		free(line); // Don't forget to free memory!
 		i++;
     }
